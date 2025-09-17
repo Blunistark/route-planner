@@ -34,6 +34,7 @@ class VideoGenerator {
         };
         this.exportProgress = 0;
         this.exportStatus = 'idle';
+        this.isExporting = false; // Flag to control video export behavior
     }
 
     init() {
@@ -640,6 +641,11 @@ class VideoGenerator {
     }
     
     drawProgressiveWaypoints(waypoints, progress, routeColor) {
+        // Skip waypoint drawing during video export
+        if (this.isExporting) {
+            return;
+        }
+        
         const ctx = this.previewContext;
         
         // Calculate how many waypoints to show based on route progress
@@ -688,12 +694,14 @@ class VideoGenerator {
             ctx.shadowBlur = 0;
             ctx.globalAlpha = 1;
             
-            // Waypoint number
-            ctx.fillStyle = isStart || (isEnd && progress >= 1) ? '#fff' : '#333';
-            ctx.font = `${Math.max(8, 10 * this.mapTransform.scale)}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(index + 1, wp.x, wp.y);
+            // Waypoint number (skip during export)
+            if (!this.isExporting) {
+                ctx.fillStyle = isStart || (isEnd && progress >= 1) ? '#fff' : '#333';
+                ctx.font = `${Math.max(8, 10 * this.mapTransform.scale)}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(index + 1, wp.x, wp.y);
+            }
         });
         
         // Draw direction arrow if route is in progress
@@ -894,6 +902,9 @@ class VideoGenerator {
         const originalPlaying = this.isPlaying;
         
         try {
+            // Set export mode to hide waypoints
+            this.isExporting = true;
+            
             // Stop any current animation
             this.pausePreview();
             
@@ -930,6 +941,9 @@ class VideoGenerator {
             return frames;
             
         } finally {
+            // Reset export mode
+            this.isExporting = false;
+            
             // Restore original timeline state
             this.currentTime = originalTime;
             if (originalPlaying) {

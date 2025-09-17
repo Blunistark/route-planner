@@ -17,6 +17,7 @@ class MapCanvas {
         this.routes = [];
         this.hoveredWaypoint = null;
         this.selectedWaypoint = null;
+        this.branchMode = false; // Flag for branch route creation mode
     }
 
     init() {
@@ -129,6 +130,10 @@ class MapCanvas {
             this.startNewRoute();
         });
 
+        document.addEventListener('addBranchRoute', () => {
+            this.startBranchRouteMode();
+        });
+
         document.addEventListener('clearAllRoutes', () => {
             this.clearAllRoutes();
         });
@@ -220,6 +225,9 @@ class MapCanvas {
             case 'erase':
                 this.handleEraseMouseDown(pos);
                 break;
+            case 'branch':
+                this.handleBranchMouseDown(pos);
+                break;
         }
     }
 
@@ -294,6 +302,30 @@ class MapCanvas {
         }
     }
 
+    handleBranchMouseDown(pos) {
+        const waypoint = this.getWaypointAt(pos);
+        
+        if (waypoint) {
+            // Find which route this waypoint belongs to
+            const sourceRoute = this.routes.find(route => 
+                route.waypoints.some(wp => wp.x === waypoint.x && wp.y === waypoint.y)
+            );
+            
+            if (sourceRoute) {
+                this.createBranchFromWaypoint(waypoint, sourceRoute);
+            } else {
+                console.error('Could not find source route for waypoint');
+            }
+        } else {
+            // If no waypoint clicked, show message
+            if (window.app?.ui?.showNotification) {
+                window.app.ui.showNotification('Click on a waypoint to create a branch route from that point', 'warning');
+            } else {
+                alert('Click on a waypoint to create a branch route from that point');
+            }
+        }
+    }
+
     handlePan(pos) {
         const dx = pos.x - this.lastMousePos.x;
         const dy = pos.y - this.lastMousePos.y;
@@ -331,6 +363,76 @@ class MapCanvas {
         this.routes.push(this.currentRoute);
         this.updateRoutesList();
         this.updateStatistics();
+    }
+
+    startBranchRouteMode() {
+        this.branchMode = true;
+        this.currentTool = 'branch';
+        
+        // Update UI to show branch mode
+        this.updateToolUI();
+        
+        // Show instruction message
+        if (window.app?.ui?.showNotification) {
+            window.app.ui.showNotification('Branch Route Mode: Click on any waypoint to create a new route branch from that point', 'info');
+        } else {
+            alert('Branch Route Mode: Click on any waypoint to create a new route branch from that point');
+        }
+        
+        console.log('🌿 Branch route mode activated');
+    }
+
+    createBranchFromWaypoint(sourceWaypoint, sourceRoute) {
+        if (!sourceWaypoint || !sourceRoute) {
+            console.error('Invalid waypoint or route for branching');
+            return;
+        }
+
+        const routeColor = document.getElementById('routeColor').value;
+        const routeWidth = parseInt(document.getElementById('routeWidth').value);
+        const routeStyle = document.getElementById('routeStyle').value;
+        
+        // Create new branch route
+        const branchRoute = {
+            id: this.generateRouteId(),
+            name: `Branch from ${sourceRoute.name}`,
+            waypoints: [
+                // Start with the source waypoint as the first waypoint of the branch
+                { ...sourceWaypoint }
+            ],
+            style: {
+                color: routeColor,
+                width: routeWidth,
+                dashPattern: this.getDashPattern(routeStyle)
+            },
+            visible: true,
+            created: new Date().toISOString(),
+            animation: {
+                duration: 3000,
+                easing: 'ease-in-out',
+                delay: sourceRoute.animation?.delay || 0 + 500 // Slight delay after parent route
+            },
+            parentRoute: sourceRoute.id,
+            branchFromWaypoint: sourceWaypoint
+        };
+        
+        this.routes.push(branchRoute);
+        this.currentRoute = branchRoute;
+        
+        // Exit branch mode and enter drawing mode
+        this.branchMode = false;
+        this.currentTool = 'draw';
+        this.updateToolUI();
+        
+        this.updateRoutesList();
+        this.updateStatistics();
+        this.render();
+        
+        if (window.app?.ui?.showNotification) {
+            window.app.ui.showNotification(`Branch route created from ${sourceRoute.name}. Continue adding waypoints.`, 'success');
+        }
+        
+        console.log('🌿 Branch route created:', branchRoute);
     }
 
     addWaypointToRoute(mapPos) {
@@ -643,11 +745,11 @@ class MapCanvas {
         }
         
         routesList.innerHTML = this.routes.map(route => `
-            <div class="route-item ${route === this.currentRoute ? 'active' : ''}" data-route-id="${route.id}">
+            <div class="route-item ${route === this.currentRoute ? 'active' : ''} ${route.parentRoute ? 'branch-route' : ''}" data-route-id="${route.id}">
                 <div class="route-header">
                     <div class="route-name">
                         <div class="route-color" style="background-color: ${route.style.color}"></div>
-                        ${route.name}
+                        ${route.parentRoute ? '🌿 ' : ''}${route.name}
                     </div>
                     <div class="route-actions">
                         <button class="route-visibility ${route.visible ? 'visible' : ''}" onclick="app.canvas.toggleRouteVisibility('${route.id}')">
@@ -662,6 +764,7 @@ class MapCanvas {
                     <div class="route-stats">
                         <span>${route.waypoints.length} points</span>
                         <span>${this.calculateRouteDistance(route)}m</span>
+                        ${route.parentRoute ? '<span class="branch-indicator">Branch</span>' : ''}
                     </div>
                 </div>
             </div>
@@ -847,6 +950,13 @@ class MapCanvas {
                 height: 1080,
                 hasMap: false
             };
+        }
+    }
+
+    updateToolUI() {
+        // This method communicates with UIController to update tool selection
+        if (window.app?.ui) {
+            window.app.ui.selectTool(this.currentTool);
         }
     }
 }

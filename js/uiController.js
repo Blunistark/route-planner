@@ -75,6 +75,7 @@ class UIController {
 
         // Route management
         addEventListenerSafe('addRoute', 'click', () => this.addRoute());
+        addEventListenerSafe('addBranchRoute', 'click', () => this.addBranchRoute());
         addEventListenerSafe('clearAllRoutes', 'click', () => this.clearAllRoutes());
 
         // Map upload
@@ -272,6 +273,11 @@ class UIController {
     addRoute() {
         this.dispatchEvent('addRoute');
         this.selectTool('draw');
+    }
+
+    addBranchRoute() {
+        this.dispatchEvent('addBranchRoute');
+        // Don't change tool here - the branch mode will handle it
     }
 
     clearAllRoutes() {
