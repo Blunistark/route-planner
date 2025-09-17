@@ -1,0 +1,666 @@
+/* Drawing Tools Specific Styles */
+
+/* Upload Area */
+.upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 32px 20px;
+    text-align: center;
+    transition: var(--transition);
+    cursor: pointer;
+    background: var(--bg-secondary);
+    position: relative;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-hover);
+}
+
+.upload-area.dragover {
+    border-color: var(--primary-color);
+    background: rgba(66, 133, 244, 0.1);
+    transform: scale(1.02);
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.upload-icon {
+    font-size: 48px;
+    opacity: 0.6;
+}
+
+.upload-text {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.upload-text small {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.upload-progress {
+    padding: 20px;
+}
+
+.progress-text {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Map Info */
+.map-info {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 400;
+}
+
+/* Drawing Tools */
+.tool-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: var(--bg-secondary);
+    padding: 4px;
+    border-radius: var(--border-radius);
+}
+
+.tool-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 8px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tool-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.tool-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.tool-btn .icon {
+    font-size: 20px;
+}
+
+/* Color Palette */
+.color-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.color-picker {
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: none;
+    cursor: pointer;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: var(--border-radius-sm);
+}
+
+.color-presets {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.color-preset {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.color-preset:hover {
+    transform: scale(1.1);
+    border-color: var(--text-primary);
+}
+
+.color-preset.active {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* Tool Actions */
+.tool-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.tool-actions .btn {
+    flex: 1;
+}
+
+/* Routes Panel */
+.routes-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.routes-header .btn {
+    flex: 1;
+}
+
+.routes-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.routes-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.routes-list::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.routes-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.no-routes {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-muted);
+}
+
+.no-routes p {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.no-routes small {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Route Item */
+.route-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.route-item:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.route-item.selected {
+    border-color: var(--primary-color);
+    background: rgba(66, 133, 244, 0.1);
+}
+
+.route-item.active {
+    border-color: var(--success-color);
+    background: rgba(52, 168, 83, 0.1);
+}
+
+.route-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.route-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.route-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.route-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.route-action {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    border-radius: var(--border-radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.route-action:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.route-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.route-stats {
+    display: flex;
+    gap: 12px;
+}
+
+.route-visibility {
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.route-visibility.visible {
+    color: var(--text-primary);
+}
+
+/* Drop Zone */
+.drop-zone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+.drop-zone.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.drop-zone-content {
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.drop-zone-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.8;
+}
+
+.drop-zone-content p {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Timeline */
+.timeline-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.timeline-controls .btn {
+    flex: 1;
+}
+
+.timeline-slider {
+    margin-bottom: 16px;
+}
+
+.timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.animation-settings {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Export Actions */
+.export-section {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.export-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.export-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.export-progress {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progress-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.progress-percentage {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.progress-details {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.progress-details small {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* Canvas Cursors */
+.canvas-area.tool-select .map-canvas {
+    cursor: default;
+}
+
+.canvas-area.tool-draw .map-canvas {
+    cursor: crosshair;
+}
+
+.canvas-area.tool-erase .map-canvas {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ea4335"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4 4 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l8.49-8.49c.79-.78 2.05-.78 2.84 0l2.1 2.1zm-2.12 10.61l2.83-2.83-1.41-1.41-2.83 2.83 1.41 1.41z"/></svg>') 12 12, auto;
+}
+
+.canvas-area.dragging .map-canvas {
+    cursor: grabbing !important;
+}
+
+.canvas-area.grabbable .map-canvas {
+    cursor: grab;
+}
+
+/* Waypoint Styles */
+.waypoint {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+.waypoint:hover {
+    transform: scale(1.2);
+}
+
+.waypoint.selected {
+    border-width: 3px;
+    transform: scale(1.3);
+}
+
+/* Route Path */
+.route-path {
+    stroke-width: 3;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.route-path.dashed {
+    stroke-dasharray: 10, 5;
+}
+
+.route-path.dotted {
+    stroke-dasharray: 2, 3;
+}
+
+.route-path:hover {
+    stroke-width: 5;
+}
+
+.route-path.selected {
+    stroke-width: 5;
+    filter: drop-shadow(0 0 6px currentColor);
+}
+
+/* Animation Classes */
+.route-drawing {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawRoute 2s ease-in-out forwards;
+}
+
+@keyframes drawRoute {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scale-in {
+    animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* Touch/Mobile Specific */
+@media (hover: none) and (pointer: coarse) {
+    .tool-btn:hover {
+        background: transparent;
+        color: var(--text-secondary);
+    }
+    
+    .tool-btn:active {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+    }
+    
+    .waypoint {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .route-action {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+}
+
+/* Animation Preview */
+.animation-preview {
+    margin: 16px 0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: var(--bg-primary);
+    min-height: 200px;
+    position: relative;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.preview-overlay:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.preview-play-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    transition: var(--transition);
+    transform: scale(1);
+}
+
+.preview-play-button:hover {
+    transform: scale(1.1);
+    background: var(--primary-hover);
+}
+
+.preview-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.preview-controls .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Hidden elements by default */
+#exportProgress,
+#loadingOverlay,
+#contextMenu {
+    display: none;
+}
+
+#exportProgress.show,
+#loadingOverlay.show,
+#contextMenu.show {
+    display: block;
+}

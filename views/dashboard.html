@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Route Video Generator</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/drawing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app" class="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="icon">🗺️</span>
+                    Map Route Video Generator
+                </h1>
+                <div class="header-actions">
+                    <button id="saveProject" class="btn btn-secondary">
+                        <span class="icon">💾</span>
+                        Save Project
+                    </button>
+                    <button id="loadProject" class="btn btn-secondary">
+                        <span class="icon">📂</span>
+                        Load Project
+                    </button>
+                    <input type="file" id="loadProjectFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Left Sidebar -->
+            <aside class="sidebar sidebar-left">
+                <!-- Map Upload Section -->
+                <section class="panel map-upload-panel">
+                    <h3 class="panel-title">Map Image</h3>
+                    <div class="upload-area" id="mapUploadArea">
+                        <div class="upload-content">
+                            <div class="upload-icon">📁</div>
+                            <p class="upload-text">
+                                Drag & drop your map image here<br>
+                                <small>or click to browse</small>
+                            </p>
+                            <input type="file" id="mapFileInput" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="uploadProgressFill"></div>
+                            </div>
+                            <span class="progress-text" id="uploadProgressText">Uploading...</span>
+                        </div>
+                    </div>
+                    <div class="map-info" id="mapInfo" style="display: none;">
+                        <div class="info-item">
+                            <span class="info-label">File:</span>
+                            <span class="info-value" id="mapFileName">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Size:</span>
+                            <span class="info-value" id="mapFileSize">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Dimensions:</span>
+                            <span class="info-value" id="mapDimensions">-</span>
+                        </div>
+                        <button id="removeMap" class="btn btn-danger btn-sm">Remove Map</button>
+                    </div>
+                </section>
+
+                <!-- Drawing Tools -->
+                <section class="panel drawing-tools-panel">
+                    <h3 class="panel-title">Drawing Tools</h3>
+                    <div class="tool-group">
+                        <button id="selectTool" class="tool-btn active" data-tool="select">
+                            <span class="icon">↖️</span>
+                            Select
+                        </button>
+                        <button id="drawTool" class="tool-btn" data-tool="draw">
+                            <span class="icon">✏️</span>
+                            Draw Route
+                        </button>
+                        <button id="eraseTool" class="tool-btn" data-tool="erase">
+                            <span class="icon">🗑️</span>
+                            Erase
+                        </button>
+                    </div>
+                    
+                    <div class="tool-options">
+                        <div class="option-group">
+                            <label class="option-label">Route Color</label>
+                            <div class="color-palette">
+                                <input type="color" id="routeColor" value="#ff4444" class="color-picker">
+                                <div class="color-presets">
+                                    <button class="color-preset" data-color="#ff4444" style="background-color: #ff4444;"></button>
+                                    <button class="color-preset" data-color="#44ff44" style="background-color: #44ff44;"></button>
+                                    <button class="color-preset" data-color="#4444ff" style="background-color: #4444ff;"></button>
+                                    <button class="color-preset" data-color="#ffff44" style="background-color: #ffff44;"></button>
+                                    <button class="color-preset" data-color="#ff44ff" style="background-color: #ff44ff;"></button>
+                                    <button class="color-preset" data-color="#44ffff" style="background-color: #44ffff;"></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label" for="routeWidth">Line Width</label>
+                            <div class="slider-group">
+                                <input type="range" id="routeWidth" min="1" max="20" value="3" class="slider">
+                                <span class="slider-value" id="routeWidthValue">3px</span>
+                            </div>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">Line Style</label>
+                            <select id="routeStyle" class="select">
+                                <option value="solid">Solid</option>
+                                <option value="dashed">Dashed</option>
+                                <option value="dotted">Dotted</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-actions">
+                        <button id="undoAction" class="btn btn-secondary btn-sm">
+                            <span class="icon">↶</span>
+                            Undo
+                        </button>
+                        <button id="redoAction" class="btn btn-secondary btn-sm">
+                            <span class="icon">↷</span>
+                            Redo
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Route List -->
+                <section class="panel routes-panel">
+                    <h3 class="panel-title">Routes</h3>
+                    <div class="routes-header">
+                        <button id="addRoute" class="btn btn-primary btn-sm">
+                            <span class="icon">➕</span>
+                            New Route
+                        </button>
+                        <button id="clearAllRoutes" class="btn btn-danger btn-sm">
+                            <span class="icon">🗑️</span>
+                            Clear All
+                        </button>
+                    </div>
+                    <div class="routes-list" id="routesList">
+                        <div class="no-routes">
+                            <p>No routes created yet.</p>
+                            <small>Click "New Route" or start drawing on the map.</small>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Canvas Area -->
+            <div class="canvas-area">
+                <div class="canvas-container">
+                    <div class="canvas-tools">
+                        <div class="zoom-controls">
+                            <button id="zoomIn" class="btn btn-secondary btn-sm">🔍+</button>
+                            <span id="zoomLevel">100%</span>
+                            <button id="zoomOut" class="btn btn-secondary btn-sm">🔍-</button>
+                            <button id="resetZoom" class="btn btn-secondary btn-sm">Reset</button>
+                        </div>
+                        <div class="canvas-info">
+                            <span id="canvasInfo">Ready to draw</span>
+                        </div>
+                    </div>
+                    <div class="canvas-wrapper" id="canvasWrapper">
+                        <canvas id="mapCanvas" class="map-canvas"></canvas>
+                        <div class="canvas-overlay" id="canvasOverlay">
+                            <div class="drop-zone" id="canvasDropZone">
+                                <div class="drop-zone-content">
+                                    <div class="drop-zone-icon">🗺️</div>
+                                    <p>Drop your map image here to get started</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <aside class="sidebar sidebar-right">
+                <!-- Animation Timeline -->
+                <section class="panel timeline-panel">
+                    <h3 class="panel-title">Animation Timeline</h3>
+                    <div class="timeline-controls">
+                        <button id="playPreview" class="btn btn-primary">
+                            <span class="icon" id="playIcon">▶️</span>
+                            <span id="playText">Play</span>
+                        </button>
+                        <button id="stopPreview" class="btn btn-secondary">
+                            <span class="icon">⏹️</span>
+                            Stop
+                        </button>
+                    </div>
+                    <div class="animation-preview" id="animationPreview">
+                        <!-- Preview canvas will be inserted here by JavaScript -->
+                        <div class="preview-controls">
+                            <button id="previewPlayBtn" class="btn btn-small btn-primary">
+                                <span class="icon">▶️</span>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+                    <div class="timeline-slider">
+                        <input type="range" id="timelineSlider" min="0" max="100" value="0" class="slider">
+                        <div class="timeline-labels">
+                            <span>0s</span>
+                            <span id="timelineDuration">10s</span>
+                        </div>
+                    </div>
+                    <div class="animation-settings">
+                        <div class="option-group">
+                            <label class="option-label" for="animationSpeed">Animation Speed</label>
+                            <div class="slider-group">
+                                <input type="range" id="animationSpeed" min="0.5" max="5" value="1" step="0.1" class="slider">
+                                <span class="slider-value" id="animationSpeedValue">1.0x</span>
+                            </div>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="totalDuration">Total Duration</label>
+                            <div class="slider-group">
+                                <input type="range" id="totalDuration" min="5" max="60" value="10" class="slider">
+                                <span class="slider-value" id="totalDurationValue">10s</span>
+                            </div>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="easingType">Animation Easing</label>
+                            <select id="easingType" class="select">
+                                <option value="linear">Linear</option>
+                                <option value="easeInOut">Ease In-Out</option>
+                                <option value="easeInOutCubic" selected>Smooth (Cubic)</option>
+                                <option value="easeInQuad">Ease In</option>
+                                <option value="easeOutQuad">Ease Out</option>
+                                <option value="easeInCubic">Ease In (Strong)</option>
+                                <option value="easeOutCubic">Ease Out (Strong)</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Export Options -->
+                <section class="panel export-panel">
+                    <h3 class="panel-title">Export Options</h3>
+                    
+                    <div class="export-section">
+                        <h4 class="section-title">Video Settings</h4>
+                        <div class="option-group">
+                            <label class="option-label" for="videoWidth">Width</label>
+                            <input type="number" id="videoWidth" value="1920" min="480" max="4096" class="input">
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="videoHeight">Height</label>
+                            <input type="number" id="videoHeight" value="1080" min="270" max="4096" class="input">
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="videoFps">Frame Rate</label>
+                            <select id="videoFps" class="select">
+                                <option value="24">24 FPS</option>
+                                <option value="30" selected>30 FPS</option>
+                                <option value="60">60 FPS</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="videoFormat">Format</label>
+                            <select id="videoFormat" class="select">
+                                <option value="mp4" selected>MP4</option>
+                                <option value="webm">WebM</option>
+                                <option value="avi">AVI</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="videoQuality">Quality</label>
+                            <select id="videoQuality" class="select">
+                                <option value="high" selected>High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="videoBgColor">Background Color</label>
+                            <input type="color" id="videoBgColor" value="#ffffff" class="input">
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label" for="animationDuration">Animation Duration (seconds)</label>
+                            <input type="number" id="animationDuration" value="5" min="1" max="60" step="0.5" class="input">
+                        </div>
+                    </div>
+
+                    <div class="export-actions">
+                        <button id="generateVideo" class="btn btn-success">
+                            <span class="icon">🎬</span>
+                            Generate Video
+                        </button>
+                        <button id="exportRoutes" class="btn btn-secondary">
+                            <span class="icon">💾</span>
+                            Export Routes
+                        </button>
+                        <button id="exportImage" class="btn btn-secondary">
+                            <span class="icon">🖼️</span>
+                            Export Image
+                        </button>
+                    </div>
+
+                    <div class="export-progress" id="exportProgress" style="display: none;">
+                        <div class="progress-info">
+                            <span class="progress-label" id="exportProgressLabel">Processing...</span>
+                            <span class="progress-percentage" id="exportProgressPercentage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="exportProgressFill"></div>
+                        </div>
+                        <div class="progress-details">
+                            <small id="exportProgressDetails">Preparing export...</small>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Statistics -->
+                <section class="panel stats-panel">
+                    <h3 class="panel-title">Statistics</h3>
+                    <div class="stats-list">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Routes:</span>
+                            <span class="stat-value" id="totalRoutes">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Waypoints:</span>
+                            <span class="stat-value" id="totalWaypoints">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Estimated Distance:</span>
+                            <span class="stat-value" id="estimatedDistance">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Animation Time:</span>
+                            <span class="stat-value" id="animationTime">10s</span>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h3 class="loading-title">Processing...</h3>
+                <p class="loading-text" id="loadingText">Please wait while we process your request.</p>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notifications" class="notifications"></div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu" style="display: none;">
+        <div class="context-menu-item" data-action="edit">
+            <span class="icon">✏️</span>
+            Edit Route
+        </div>
+        <div class="context-menu-item" data-action="duplicate">
+            <span class="icon">📋</span>
+            Duplicate
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-action="delete">
+            <span class="icon">🗑️</span>
+            Delete Route
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/uiController.js"></script>
+    <script src="/js/mapCanvas.js"></script>
+    <script src="/js/routeManager.js"></script>
+    <script src="/js/videoGenerator.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "id": "8c6e6fc0-cec3-4831-852e-6a0afbab6021",
+  "timestamp": "2025-09-17T06:22:37.196Z",
+  "mapInfo": {},
+  "routes": [
+    {
+      "id": "route_1758077907051_crhqmu0g1",
+      "name": "Route 1",
+      "waypoints": [],
+      "style": {
+        "color": "#ff4444",
+        "width": 3,
+        "dashPattern": []
+      },
+      "properties": {
+        "description": "",
+        "category": "default",
+        "estimatedTime": 0,
+        "difficulty": "easy"
+      },
+      "metadata": {
+        "created": "2025-09-17T02:58:27.052Z",
+        "modified": "2025-09-17T02:58:27.052Z",
+        "version": 1
+      },
+      "visible": true,
+      "locked": false,
+      "animation": {
+        "duration": 3000,
+        "easing": "ease-in-out",
+        "delay": 0
+      }
+    }
+  ],
+  "metadata": {
+    "totalRoutes": 1,
+    "exportVersion": "1.0.0"
+  }
+}
